@@ -3,6 +3,7 @@ import { Request, Response, NextFunction, RequestHandler } from "express";
 import { validate, ValidationError } from "class-validator";
 import { instanceToPlain, plainToInstance } from "class-transformer";
 import HttpError from "../exceptions/http-error";
+import HttpStatus from "http-status-codes";
 
 const convertString = (data: any): string => {
   const keys = Object.keys(data);
@@ -24,7 +25,6 @@ const getErrorMessage = (data: any, nowKey: string): string => {
 
 export const validationBodyMiddleware = (type: any, skipMissingProperties = false): RequestHandler => {
   return (req: Request, res: Response, next: NextFunction): any => {
-    console.log(`Request to ${req.originalUrl} with body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
     const classData = plainToInstance(type, req.body);
     validate(classData, {skipMissingProperties})
       .then((errors: ValidationError[]) => {
@@ -35,5 +35,28 @@ export const validationBodyMiddleware = (type: any, skipMissingProperties = fals
         }
       })
       .catch((error) => (next(error)));
+  };
+};
+
+export const validationPathMiddleware = (
+  type: any,
+  skipMissingProperties = false
+): RequestHandler => {
+  return (req: Request, res: Response, next: NextFunction): any => {
+    validate(plainToInstance(type, req.params), { skipMissingProperties })
+      .then((errors: ValidationError[]) => {
+        if (errors.length > 0) {
+          next(
+            new HttpError(
+              getErrorMessage(errors, ""),
+              HttpStatus.UNPROCESSABLE_ENTITY,
+              "VALIDATIONERROR"
+            )
+          );
+        } else {
+          next();
+        }
+      })
+      .catch(error => next(error));
   };
 };

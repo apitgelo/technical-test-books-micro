@@ -1,5 +1,6 @@
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsNotEmptyObject, IsNumber, IsString, ValidateNested } from "class-validator";
+import { IsObjectId } from "./customs/is-object-id";
 
 export class BookCreateInput {
   @IsString()
@@ -28,4 +29,11 @@ export class BookCreateValidator {
   @IsNotEmptyObject()
   @Type(() => BookCreateInput)
   data!: BookCreateInput;
+}
+
+export class BookGetPathValidator {
+  @IsString()
+  @IsNotEmpty()
+  @IsObjectId({ message: "Invalid book ID format" })
+  bookId!: string;
 }

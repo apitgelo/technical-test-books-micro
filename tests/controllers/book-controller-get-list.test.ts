@@ -4,7 +4,7 @@ import { buildBookCreateResponse } from "../utils/helpers";
 import { createBook } from "../../src/services/book-service";
 
 describe("GET /books BookController browseBooks", () => {
-  it("should return 200 for successful book retrieval", async () => {
+  it("should return 200 for successful books retrieval", async () => {
     const books = [
       {
         title: "The Hobbit",
