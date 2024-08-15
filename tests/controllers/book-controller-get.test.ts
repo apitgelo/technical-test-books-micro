@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app";
-import { buildBookCreateResponse } from "../utils/helpers";
+import { buildBookResponse } from "../utils/helpers";
 import { createBook } from "../../src/services/book-service";
 
 describe("GET /books/:bookId BookController getBook", () => {
@@ -15,7 +15,7 @@ describe("GET /books/:bookId BookController getBook", () => {
 
     const createdBook = await createBook(book);
 
-    const responseBody = buildBookCreateResponse(createdBook);
+    const responseBody = buildBookResponse(createdBook);
     const response = await request(app).get(`/books/${createdBook.id}`);
 
     expect(response.status).toBe(200);

@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app";
-import { buildBookCreateResponse } from "../utils/helpers";
+import { buildBookResponse } from "../utils/helpers";
 
 describe("POST /books BookController addBook", () => {
   it("should return 201 for successful book creation", async () => {
@@ -14,7 +14,7 @@ describe("POST /books BookController addBook", () => {
       },
     };
 
-    const responseBody = buildBookCreateResponse(bookCreatePayload.data);
+    const responseBody = buildBookResponse(bookCreatePayload.data);
     const response = await request(app)
       .post("/books")
       .send(bookCreatePayload);

@@ -1,6 +1,6 @@
-import { BookCreateInput, BookUpdateInput } from "../validators/book-validator";
+import { BookBrowseParamsValidator, BookCreateInput, BookUpdateInput } from "../validators/book-validator";
 import BookModel from "../models/book";
-import { BookInterface } from "../interfaces/book-interface";
+import { BookInterface, BooksPresenter } from "../interfaces/book-interface";
 import HttpError from "../exceptions/http-error";
 import { BOOK_NOT_FOUND } from "../exceptions/messages";
 import HttpStatus from "http-status-codes";
@@ -11,10 +11,29 @@ export const createBook = async (bookCreateInput: BookCreateInput): Promise<Book
   return book;
 }
 
-export const getBooks = async (): Promise<BookInterface[]> => {
-  const books = await BookModel.find();
+export const getBooks = async (bookBrowseParams: BookBrowseParamsValidator): Promise<BooksPresenter> => {
+  const { page = 1, limit = 10, title, author, genres } = bookBrowseParams;
 
-  return books;
+  let query = {};
+  if (title) {
+    query = { ...query, title: { $regex: title, $options: "i" } };
+  }
+  if (author) {
+    query = { ...query, author: { $regex: author, $options: "i" } };
+  }
+  if (genres) {
+    query = { ...query, genres: { $in: genres.split(',') } };
+  }
+
+  const total = await BookModel.countDocuments(query);
+  const books = await BookModel.find(query).skip((page - 1) * limit).limit(limit);
+
+  return {
+    page: +page,
+    totalPages: Math.ceil(total / limit),
+    totalBooks: total,
+    books,
+  }
 }
 
 export const getBookById = async (bookId: string): Promise<BookInterface> => {

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import HttpStatus from "http-status-codes";
 import { createBook, deleteBook, getBookById, getBooks, updateBook } from "../services/book-service";
-import { BookInterface } from "../interfaces/book-interface";
+import { BookInterface, BooksPresenter } from "../interfaces/book-interface";
 
 export const addBook = async (req: Request, res: Response, next: NextFunction) => {
   const { data } = req.body;
@@ -16,8 +16,10 @@ export const addBook = async (req: Request, res: Response, next: NextFunction) =
 };
 
 export const browseBooks = async (req: Request, res: Response, next: NextFunction) => {
+  const queries = req.query;
+
   try {
-    const books: BookInterface[] = await getBooks();
+    const books: BooksPresenter = await getBooks(queries);
     res.status(HttpStatus.OK).json(books);
   } catch (error) {
     console.error("Error occurred when getting books", error);

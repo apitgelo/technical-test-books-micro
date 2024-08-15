@@ -60,3 +60,17 @@ export const validationPathMiddleware = (
       .catch(error => next(error));
   };
 };
+
+export const validationQueryMiddleware = (type: any, skipMissingProperties = false): RequestHandler => {
+  return (req: Request, res: Response, next: NextFunction): any => {
+    validate(plainToInstance(type, req.query), {skipMissingProperties})
+      .then((errors: ValidationError[]) => {
+        if (errors.length > 0) {
+          next(new HttpError(getErrorMessage(errors, ""), 422, "VALIDATIONERROR"));
+        } else {
+          next();
+        }
+      })
+      .catch((error) => (next(error)));
+  };
+};

@@ -1,6 +1,6 @@
 import { createBook, deleteBook, getBookById, getBooks, updateBook } from "../../src/services/book-service";
 import { BookCreateInput } from "../../src/validators/book-validator";
-import { buildBookCreateResponse } from "../utils/helpers";
+import { buildBookListResponse, buildBookResponse } from "../utils/helpers";
 
 describe("BookService createBook", () => {
   it("should return a book for successful book creation", async () => {
@@ -12,7 +12,7 @@ describe("BookService createBook", () => {
       stock: 10,
     };
 
-    const responseBody = buildBookCreateResponse(bookCreateInput);
+    const responseBody = buildBookResponse(bookCreateInput);
     const response = await createBook(bookCreateInput);
 
     expect(response).toMatchObject(responseBody);
@@ -41,16 +41,44 @@ describe("BookService getBooks", () => {
     await createBook(books[0]);
     await createBook(books[1]);
 
-    const responseBody = books.map((book) => buildBookCreateResponse(book));
-    const response = await getBooks();
+    const responseBody = buildBookListResponse(1, 10, books.length, books.map((book) => buildBookResponse(book)));
+    const response = await getBooks({});
 
     expect(response).toMatchObject(responseBody);
   });
 
   it("should return an empty list for empty book list", async () => {
-    const response = await getBooks();
+    const responseBody = buildBookListResponse(1, 10, 0, []);
+    const response = await getBooks({});
 
-    expect(response).toMatchObject([]);
+    expect(response).toMatchObject(responseBody);
+  });
+
+  it("should return a list of books for successful book retrieval with query", async () => {
+    const books = [
+      {
+        title: "The Hobbit",
+        author: "J.R.R. Tolkien",
+        publishedYear: 1937,
+        genres: ["Fantasy"],
+        stock: 10,
+      },
+      {
+        title: "The Fellowship of the Ring",
+        author: "J.R.R. Tolkien",
+        publishedYear: 1954,
+        genres: ["Fantasy"],
+        stock: 5,
+      },
+    ];
+
+    await createBook(books[0]);
+    await createBook(books[1]);
+
+    const responseBody = buildBookListResponse(1, 10, 1, [buildBookResponse(books[0])]);
+    const response = await getBooks({ title: "Hobbit", author: "Tolkien", genres: "Fantasy" });
+
+    expect(response).toMatchObject(responseBody);
   });
 });
 
@@ -65,7 +93,7 @@ describe("BookService getBookById", () => {
     };
 
     const createdBook = await createBook(bookCreateInput);
-    const responseBody = buildBookCreateResponse(bookCreateInput);
+    const responseBody = buildBookResponse(bookCreateInput);
     const response = await getBookById(createdBook.id);
 
     expect(response).toMatchObject(responseBody);

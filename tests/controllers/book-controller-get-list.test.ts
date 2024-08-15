@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app";
-import { buildBookCreateResponse } from "../utils/helpers";
+import { buildBookListResponse, buildBookResponse } from "../utils/helpers";
 import { createBook } from "../../src/services/book-service";
 
 describe("GET /books BookController browseBooks", () => {
@@ -25,7 +25,7 @@ describe("GET /books BookController browseBooks", () => {
     await createBook(books[0]);
     await createBook(books[1]);
 
-    const responseBody = books.map((book) => buildBookCreateResponse(book));
+    const responseBody = buildBookListResponse(1, 10, books.length, books.map((book) => buildBookResponse(book)));
     const response = await request(app).get("/books");
 
     expect(response.status).toBe(200);
@@ -33,9 +33,10 @@ describe("GET /books BookController browseBooks", () => {
   });
 
   it("should return 200 for empty book list", async () => {
+    const responseBody = buildBookListResponse(1, 10, 0, []);
     const response = await request(app).get("/books");
 
     expect(response.status).toBe(200);
-    expect(response.body).toMatchObject([]);
+    expect(response.body).toMatchObject(responseBody);
   });
 });

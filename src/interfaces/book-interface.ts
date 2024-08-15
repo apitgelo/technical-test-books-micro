@@ -7,3 +7,10 @@ export interface BookInterface extends Document {
   genres: string[];
   stock: number;
 }
+
+export interface BooksPresenter {
+  page: number;
+  totalPages: number;
+  totalBooks: number;
+  books: BookInterface[];
+}
