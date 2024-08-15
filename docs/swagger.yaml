@@ -1,0 +1,315 @@
+openapi: 3.0.0
+info:
+  title: Books API
+  description: A RESTful API using TypeScript for managing a library book management system
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local server
+paths:
+  /books:
+    post:
+      summary: Create a new book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    author:
+                      type: string
+                    publishedYear:
+                      type: integer
+                    genres:
+                      type: array
+                      items:
+                        type: string
+                    stock:
+                      type: integer
+                  required:
+                    - title
+                    - author
+                    - publishedYear
+                    - genres
+                    - stock
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+    get:
+      summary: Get all books
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: title
+          in: query
+          description: Filter by book title
+          required: false
+          schema:
+            type: string
+            example: 'The Great Gatsby'
+        - name: author
+          in: query
+          description: Filter by author name
+          required: false
+          schema:
+            type: string
+            example: 'F. Scott Fitzgerald'
+        - name: genres
+          in: query
+          description: Filter by genres (comma-separated)
+          required: false
+          schema:
+            type: string
+            example: 'Fiction,Classic'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    format: int32
+                    example: 1
+                  totalPages:
+                    type: integer
+                    format: int32
+                    example: 1
+                  totalBooks:
+                    type: integer
+                    format: int32
+                    example: 1
+                  books:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+  /books/{id}:
+    get:
+      summary: Get a book by ID
+      parameters:
+        - name: id
+          in: path
+          description: Book ID
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      status:
+                        type: integer
+                        example: 404
+                      code:
+                        type: string
+                        example: HTTPERROR
+                      message:
+                        type: string
+                        example: 'Book with id: 66bde44cb4aeb7e02507ffc8 not found.'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      status:
+                        type: integer
+                        example: 422
+                      code:
+                        type: string
+                        example: VALIDATIONERROR
+                      message:
+                        type: string
+                        example: 'Invalid book ID format.'
+    put:
+      summary: Update a book by ID
+      parameters:
+        - name: id
+          in: path
+          description: Book ID
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      status:
+                        type: integer
+                        example: 404
+                      code:
+                        type: string
+                        example: HTTPERROR
+                      message:
+                        type: string
+                        example: 'Book with id: 66bde44cb4aeb7e02507ffc8 not found.'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      status:
+                        type: integer
+                        example: 422
+                      code:
+                        type: string
+                        example: VALIDATIONERROR
+                      message:
+                        type: string
+                        example: 'Invalid book ID format.'
+    delete:
+      summary: Delete a book by ID
+      parameters:
+        - name: id
+          in: path
+          description: Book ID
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Book deleted successfully'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      status:
+                        type: integer
+                        example: 404
+                      code:
+                        type: string
+                        example: HTTPERROR
+                      message:
+                        type: string
+                        example: 'Book with id: 66bde44cb4aeb7e02507ffc8 not found.'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      status:
+                        type: integer
+                        example: 422
+                      code:
+                        type: string
+                        example: VALIDATIONERROR
+                      message:
+                        type: string
+                        example: 'Invalid book ID format.'
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        title:
+          type: string
+          example: The Great Gatsby
+        author:
+          type: string
+          example: F. Scott Fitzgerald
+        publishedYear:
+          type: integer
+          format: int32
+          example: 1925
+        genres:
+          type: array
+          items:
+            type: string
+          example: [Fiction, Classic]
+        stock:
+          type: integer
+          format: int32
+          example: 10
