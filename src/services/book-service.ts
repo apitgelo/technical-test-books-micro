@@ -22,7 +22,7 @@ export const getBooks = async (bookBrowseParams: BookBrowseParamsValidator): Pro
     query = { ...query, author: { $regex: author, $options: "i" } };
   }
   if (genres) {
-    query = { ...query, genres: { $in: genres.split(',') } };
+    query = { ...query, genres: { $in: genres.split(",") } };
   }
 
   const total = await BookModel.countDocuments(query);

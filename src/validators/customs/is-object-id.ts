@@ -1,6 +1,6 @@
-import { registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
-import { Types } from 'mongoose';
-import { WRONG_ID_FORMAT } from '../../exceptions/messages';
+import { registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
+import { Types } from "mongoose";
+import { WRONG_ID_FORMAT } from "../../exceptions/messages";
 
 @ValidatorConstraint({ async: false })
 export class IsObjectIdConstraint implements ValidatorConstraintInterface {

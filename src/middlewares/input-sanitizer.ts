@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { check, validationResult } from 'express-validator';
+import { check, validationResult } from "express-validator";
 
 const inputSanitizer = [
   check("title").trim().escape(),
