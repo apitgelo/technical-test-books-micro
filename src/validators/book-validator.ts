@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsNotEmptyObject, IsNumber, IsString, ValidateNested } from "class-validator";
+import { IsNotEmpty, IsNotEmptyObject, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 import { IsObjectId } from "./customs/is-object-id";
 
 export class BookCreateInput {
@@ -29,6 +29,40 @@ export class BookCreateValidator {
   @IsNotEmptyObject()
   @Type(() => BookCreateInput)
   data!: BookCreateInput;
+}
+
+export class BookUpdateInput {
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  title?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  author?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @IsNotEmpty()
+  publishedYear?: number;
+
+  @IsOptional()
+  @IsString({ each: true })
+  @IsNotEmpty()
+  genres?: string[];
+
+  @IsOptional()
+  @IsNumber()
+  @IsNotEmpty()
+  stock?: number;
+}
+
+export class BookUpdateValidator {
+  @ValidateNested()
+  @IsNotEmptyObject()
+  @Type(() => BookUpdateInput)
+  data!: BookUpdateInput;
 }
 
 export class BookGetPathValidator {

@@ -1,4 +1,4 @@
-import { BookCreateInput } from "../validators/book-validator";
+import { BookCreateInput, BookUpdateInput } from "../validators/book-validator";
 import BookModel from "../models/book";
 import { BookInterface } from "../interfaces/book-interface";
 import HttpError from "../exceptions/http-error";
@@ -25,4 +25,14 @@ export const getBookById = async (bookId: string): Promise<BookInterface> => {
   }
 
   return book;
+}
+
+export const updateBook = async (bookId: string, bookUpdateInput: BookUpdateInput): Promise<BookInterface> => {
+  const book = await getBookById(bookId);
+
+  book.set(bookUpdateInput);
+
+  const updatedBook = await book.save();
+
+  return updatedBook;
 }

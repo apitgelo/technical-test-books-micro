@@ -1,4 +1,4 @@
-import { createBook, getBookById, getBooks } from "../../src/services/book-service";
+import { createBook, getBookById, getBooks, updateBook } from "../../src/services/book-service";
 import { BookCreateInput } from "../../src/validators/book-validator";
 import { buildBookCreateResponse } from "../utils/helpers";
 
@@ -74,6 +74,41 @@ describe("BookService getBookById", () => {
   it("should throw an error for a non-existent book", async () => {
     try {
       await getBookById("66bde44cb4aeb7e02507ffc8");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      expect(error.code).toBe(404);
+    }
+  });
+});
+
+describe("BookService updateBook", () => {
+  it("should return a book for successful book update", async () => {
+    const bookCreateInput: BookCreateInput = {
+      title: "The Hobbit",
+      author: "J.R.R. Tolkien",
+      publishedYear: 1937,
+      genres: ["Fantasy"],
+      stock: 10,
+    };
+
+    const createdBook = await createBook(bookCreateInput);
+
+    const updatedBook = {
+      title: "The Hobbit (Updated)",
+    };
+
+    const response = await updateBook(createdBook.id, updatedBook);
+
+    expect(response.title).toBe(updatedBook.title);
+  });
+
+  it("should throw an error for a non-existent book", async () => {
+    const updatedBook = {
+      title: "The Hobbit (Updated)",
+    };
+
+    try {
+      await updateBook("66bde44cb4aeb7e02507ffc8", updatedBook);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       expect(error.code).toBe(404);
