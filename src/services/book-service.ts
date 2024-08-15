@@ -36,3 +36,11 @@ export const updateBook = async (bookId: string, bookUpdateInput: BookUpdateInpu
 
   return updatedBook;
 }
+
+export const deleteBook = async (bookId: string): Promise<void> => {
+  const book = await BookModel.findByIdAndDelete(bookId);
+
+  if (!book) {
+    throw new HttpError(BOOK_NOT_FOUND(bookId), HttpStatus.NOT_FOUND);
+  }
+}

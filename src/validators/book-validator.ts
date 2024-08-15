@@ -65,7 +65,7 @@ export class BookUpdateValidator {
   data!: BookUpdateInput;
 }
 
-export class BookGetPathValidator {
+export class BookIdPathValidator {
   @IsString()
   @IsNotEmpty()
   @IsObjectId({ message: "Invalid book ID format" })

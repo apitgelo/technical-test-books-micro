@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import HttpStatus from "http-status-codes";
-import { createBook, getBookById, getBooks, updateBook } from "../services/book-service";
+import { createBook, deleteBook, getBookById, getBooks, updateBook } from "../services/book-service";
 import { BookInterface } from "../interfaces/book-interface";
 
 export const addBook = async (req: Request, res: Response, next: NextFunction) => {
@@ -46,6 +46,20 @@ export const editBook = async (req: Request, res: Response, next: NextFunction) 
     res.status(HttpStatus.OK).json(book);
   } catch (error) {
     console.error(`Error occurred when updating book with id: ${bookId}`, error);
+    next(error);
+  }
+}
+
+export const removeBook = async (req: Request, res: Response, next: NextFunction) => {
+  const { bookId } = req.params;
+
+  try {
+    await deleteBook(bookId);
+    res.status(HttpStatus.OK).json({
+      message: "Book deleted successfully",
+    });
+  } catch (error) {
+    console.error(`Error occurred when deleting book with id: ${bookId}`, error);
     next(error);
   }
 }
