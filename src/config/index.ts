@@ -2,6 +2,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+export const APP_DEBUG = Boolean(
+  JSON.parse(String(process.env.APP_DEBUG).toLowerCase())
+);
+
 const MONGODB_URI_SCHEME = process.env["MONGODB_URI_SCHEME"]
   ? process.env["MONGODB_URI_SCHEME"]
   : "mongodb";

@@ -2,7 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { check, validationResult } from 'express-validator';
 
 const inputSanitizer = [
-  check('*').trim().escape()
+  check("title").trim().escape(),
+  check("author").trim().escape(),
+  check("publishedYear").toInt(),
+  check("genres").trim().escape(),
+  check("stock").toInt(),
 ];
 
 const validateInput = (req: Request, res: Response, next: NextFunction) => {
