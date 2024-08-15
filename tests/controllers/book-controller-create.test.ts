@@ -2,7 +2,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { buildBookCreateResponse } from "../utils/helpers";
 
-describe("POST /books BookController create", () => {
+describe("POST /books BookController addBook", () => {
   it("should return 201 for successful book creation", async () => {
     const bookCreatePayload = {
       data: {

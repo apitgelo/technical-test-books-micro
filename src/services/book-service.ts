@@ -7,3 +7,9 @@ export const createBook = async (bookCreateInput: BookCreateInput): Promise<Book
 
   return book;
 }
+
+export const getBooks = async (): Promise<BookInterface[]> => {
+  const books = await BookModel.find();
+
+  return books;
+}

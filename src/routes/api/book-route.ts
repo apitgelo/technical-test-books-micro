@@ -6,5 +6,6 @@ import { BookCreateValidator } from "../../validators/book-validator";
 const router = express.Router();
 
 router.post("/", validationBodyMiddleware(BookCreateValidator), bookController.addBook);
+router.get("/", bookController.browseBooks);
 
 export default router;
